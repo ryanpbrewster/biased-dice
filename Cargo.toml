@@ -1,5 +1,5 @@
 [package]
-name = "darts-and-dice"
+name = "biased-dice"
 version = "0.1.0"
 authors = ["Ryan Brewster <ryanpbrewster@gmail.com>"]
 
