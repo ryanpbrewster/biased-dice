@@ -14,4 +14,5 @@ pub trait Die {
     }
 }
 
-pub mod linear_space_die;
+pub mod linear_scan_die;
+pub mod binary_search_die;

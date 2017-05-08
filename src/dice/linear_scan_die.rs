@@ -1,20 +1,19 @@
 use dice::Die;
-use std::iter::Sum;
 use rand;
 use rand::Rng;
 
-struct LinearSpaceDie {
+struct LinearScanDie {
     probabilities: Vec<f64>
 }
 
-impl LinearSpaceDie {
-    pub fn from_probabilities(ps: Vec<f64>) -> LinearSpaceDie {
+impl LinearScanDie {
+    pub fn from_probabilities(ps: Vec<f64>) -> LinearScanDie {
         assert!(ps.iter().sum::<f64>() == 1f64);
-        LinearSpaceDie { probabilities: ps }
+        LinearScanDie { probabilities: ps }
     }
 }
 
-impl Die for LinearSpaceDie {
+impl Die for LinearScanDie {
     fn probabilities(&self) -> &[f64] {
         self.probabilities.as_slice()
     }
@@ -36,12 +35,12 @@ impl Die for LinearSpaceDie {
 #[test]
 #[should_panic]
 fn test_make() {
-    LinearSpaceDie::from_probabilities(vec![0.25, 0.25, 0.25]);
+    LinearScanDie::from_probabilities(vec![0.25, 0.25, 0.25]);
 }
 
 #[test]
 fn test_roll() {
     let mut rng = rand::thread_rng();
-    let die = LinearSpaceDie::from_probabilities(vec![0.25, 0.25, 0.5]);
+    let die = LinearScanDie::from_probabilities(vec![0.25, 0.25, 0.5]);
     print!("{:?}\n", die.histogram(&mut rng, 1000));
 }
