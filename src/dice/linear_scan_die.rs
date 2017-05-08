@@ -32,7 +32,9 @@ impl Die for LinearScanDie {
 #[cfg(test)]
 mod tests {
     use test::Bencher;
-    use rand;
+
+    use rand::SeedableRng;
+    use rand::XorShiftRng;
 
     use dice::linear_scan_die::LinearScanDie;
     use dice::Die;
@@ -45,14 +47,14 @@ mod tests {
 
     #[test]
     fn test_roll() {
-        let mut rng = rand::thread_rng();
+        let mut rng: XorShiftRng = XorShiftRng::from_seed([1, 2, 3, 4]);
         let die = LinearScanDie::from_probabilities(vec![0.25, 0.25, 0.5]);
         print!("{:?}\n", die.histogram(&mut rng, 1000));
     }
 
     #[bench]
     fn bench_roll(bencher: &mut Bencher) {
-        let mut rng = rand::thread_rng();
+        let mut rng: XorShiftRng = XorShiftRng::from_seed([1, 2, 3, 4]);
         let die = LinearScanDie::from_odds(vec![1; 128]);
         bencher.iter(|| die.roll(&mut rng))
     }
