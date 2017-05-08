@@ -1,19 +1,16 @@
 use dice::Die;
-use rand;
 use rand::Rng;
 
 struct LinearScanDie {
     probabilities: Vec<f64>
 }
 
-impl LinearScanDie {
-    pub fn from_probabilities(ps: Vec<f64>) -> LinearScanDie {
+impl Die for LinearScanDie {
+    fn from_probabilities(ps: Vec<f64>) -> LinearScanDie {
         assert!(ps.iter().sum::<f64>() == 1f64);
         LinearScanDie { probabilities: ps }
     }
-}
 
-impl Die for LinearScanDie {
     fn probabilities(&self) -> &[f64] {
         self.probabilities.as_slice()
     }
@@ -32,15 +29,31 @@ impl Die for LinearScanDie {
     }
 }
 
-#[test]
-#[should_panic]
-fn test_make() {
-    LinearScanDie::from_probabilities(vec![0.25, 0.25, 0.25]);
-}
+#[cfg(test)]
+mod tests {
+    use test::Bencher;
+    use rand;
 
-#[test]
-fn test_roll() {
-    let mut rng = rand::thread_rng();
-    let die = LinearScanDie::from_probabilities(vec![0.25, 0.25, 0.5]);
-    print!("{:?}\n", die.histogram(&mut rng, 1000));
+    use dice::linear_scan_die::LinearScanDie;
+    use dice::Die;
+
+    #[test]
+    #[should_panic]
+    fn test_make() {
+        LinearScanDie::from_probabilities(vec![0.25, 0.25, 0.25]);
+    }
+
+    #[test]
+    fn test_roll() {
+        let mut rng = rand::thread_rng();
+        let die = LinearScanDie::from_probabilities(vec![0.25, 0.25, 0.5]);
+        print!("{:?}\n", die.histogram(&mut rng, 1000));
+    }
+
+    #[bench]
+    fn bench_roll(bencher: &mut Bencher) {
+        let mut rng = rand::thread_rng();
+        let die = LinearScanDie::from_odds(vec![1; 128]);
+        bencher.iter(|| die.roll(&mut rng))
+    }
 }

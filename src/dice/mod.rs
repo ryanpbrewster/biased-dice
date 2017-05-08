@@ -1,6 +1,13 @@
 use rand::Rng;
 
-pub trait Die {
+pub trait Die : Sized {
+    fn from_probabilities(ps: Vec<f64>) -> Self;
+    fn from_odds(odds: Vec<u32>) -> Self {
+        let total: u32 = odds.iter().sum();
+        let ps = odds.iter().map(|&v| v as f64 / total as f64).collect::<Vec<f64>>();
+        Self::from_probabilities(ps)
+    }
+
     fn probabilities(&self) -> &[f64];
     fn roll(&self, rng: &mut Rng) -> usize;
 
